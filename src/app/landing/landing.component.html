@@ -1,0 +1,15 @@
+
+@for (weatherForecast of weatherForecasts; track $index) {
+<div>
+  <div>
+    Date: {{weatherForecast.date}}
+  </div>
+  <div>
+    Temperature (C): {{weatherForecast.temperatureC}}
+  </div>
+  <div>
+    Summary: {{weatherForecast.summary}}
+  </div>
+</div>
+<hr>
+}
