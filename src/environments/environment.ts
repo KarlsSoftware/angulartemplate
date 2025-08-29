@@ -1,3 +1,3 @@
 export const environment = {
-    apiURL: ''
+    apiURL: 'http://www.karlchen.somee.com'
 };
