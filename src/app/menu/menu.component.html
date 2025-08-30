@@ -1,10 +1,24 @@
 <mat-toolbar>
     <span>
-        <a routerLink="" mat-button>
+        <a routerLink="" mat-button *ngIf="isAuthenticated$ | async">
             <mat-icon>laptop windows</mat-icon> Store
         </a>
-         <a routerLink="products" mat-button>
+         <a routerLink="products" mat-button *ngIf="isAuthenticated$ | async">
             Products
         </a>
     </span>
+    
+    <span class="spacer" style="flex: 1 1 auto;"></span>
+    
+    <div *ngIf="isAuthenticated$ | async; else loginButtons">
+        <span class="me-3">Welcome, {{ (user$ | async)?.firstName || (user$ | async)?.email }}!</span>
+        <button mat-button (click)="logout()">
+            <mat-icon>logout</mat-icon> Logout
+        </button>
+    </div>
+    
+    <ng-template #loginButtons>
+        <a routerLink="/login" mat-button>Login</a>
+        <a routerLink="/register" mat-button>Register</a>
+    </ng-template>
 </mat-toolbar>
