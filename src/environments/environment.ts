@@ -1,3 +1,3 @@
 export const environment = {
-    apiURL: 'http://mycrudapi.somee.com'
+    apiURL: 'https://mycrudapi.somee.com'
 };
