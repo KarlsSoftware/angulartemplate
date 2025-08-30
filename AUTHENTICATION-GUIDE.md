@@ -454,9 +454,24 @@ export const authGuard = () => {
 };
 ```
 
-## 🚀 Testing Your Implementation
+## 🚀 **DEPLOYMENT STATUS**
 
-### 1. **Start Both Applications:**
+### 🚨 **IMPORTANT**: Deploy API First!
+
+Your Angular app is ready, but you need to **deploy the updated .NET API** to production first!
+
+**Current Status:**
+- ✅ **Angular**: Ready and deployed at `https://angulartemplate-five.vercel.app`
+- ❌ **API**: Needs to be deployed to `mycrudapi.somee.com` with cookie authentication
+
+### **After API Deployment:**
+1. Your Angular app will work correctly with registration/login
+2. CORS errors will be resolved
+3. HTTP-only cookies will work securely
+
+## 🧪 **Testing Your Implementation**
+
+### **Local Testing (Works Now):**
 ```bash
 # Terminal 1 - API
 cd WebAPI/WebAPI
@@ -467,20 +482,20 @@ cd angular-app
 ng serve
 ```
 
-### 2. **Test Flow:**
-1. Open `http://localhost:4200`
-2. You should be redirected to `/login` (not authenticated)
-3. Click "Register" → Create account
+### **Production Testing (After API Deployment):**
+1. Open `https://angulartemplate-five.vercel.app`
+2. Should redirect to `/login` (not authenticated)
+3. Click "Register" → Create account (should work after API deployment)
 4. Login with new account
-5. You should see landing page (now authenticated)
+5. Should see landing page (now authenticated)
 6. Menu shows "Welcome [Name]!" and logout button
 7. Click logout → Redirected back to login
 
-### 3. **Test Route Protection:**
-1. While not logged in, try to access `http://localhost:4200/products`
+### **Route Protection Test:**
+1. While not logged in, try: `https://angulartemplate-five.vercel.app/products`
 2. Should redirect to login
 3. Log in, then try again
-4. Should work now!
+4. Should work!
 
 ## 🔧 Configuration Files
 
