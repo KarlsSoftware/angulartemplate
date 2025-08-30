@@ -8,6 +8,6 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class AppComponent {
+export class LandingComponent {
  
 }
