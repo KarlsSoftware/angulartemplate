@@ -1,24 +1,112 @@
 <mat-toolbar>
-    <span>
-        <a routerLink="" mat-button *ngIf="isAuthenticated$ | async">
-            <mat-icon>laptop windows</mat-icon> Store
-        </a>
-         <a routerLink="products" mat-button *ngIf="isAuthenticated$ | async">
-            Products
-        </a>
-    </span>
+    <!-- Desktop Navigation -->
+    <ng-container *ngIf="!(isMobile$ | async)">
+        <span class="nav-links">
+            <a routerLink="" mat-button *ngIf="isAuthenticated$ | async">
+                <mat-icon>inventory</mat-icon>
+                <span class="nav-text">Products</span>
+            </a>
+            <a routerLink="links" mat-button *ngIf="isAuthenticated$ | async">
+                <mat-icon>link</mat-icon> 
+                <span class="nav-text">Links</span>
+            </a>
+        </span>
+        
+        <span class="spacer"></span>
+        
+        <div *ngIf="isAuthenticated$ | async; else loginButtons" class="user-section">
+            <!-- User Menu -->
+            <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-button">
+                <mat-icon>account_circle</mat-icon>
+            </button>
+            
+            <mat-menu #userMenu="matMenu">
+                <div class="user-info">
+                    <span class="user-name">{{ (user$ | async)?.firstName || 'User' }}</span>
+                    <span class="user-email">{{ (user$ | async)?.email }}</span>
+                </div>
+                <mat-divider></mat-divider>
+                <button mat-menu-item routerLink="/profile">
+                    <mat-icon>edit</mat-icon>
+                    Edit Profile
+                </button>
+                <button mat-menu-item (click)="logout()">
+                    <mat-icon>logout</mat-icon>
+                    Logout
+                </button>
+            </mat-menu>
+        </div>
+        
+        <ng-template #loginButtons>
+            <div class="auth-buttons">
+                <a routerLink="/login" mat-button>
+                    <mat-icon>login</mat-icon>
+                    <span class="auth-text">Login</span>
+                </a>
+                <a routerLink="/register" mat-button>
+                    <mat-icon>person_add</mat-icon>
+                    <span class="auth-text">Register</span>
+                </a>
+            </div>
+        </ng-template>
+    </ng-container>
     
-    <span class="spacer" style="flex: 1 1 auto;"></span>
-    
-    <div *ngIf="isAuthenticated$ | async; else loginButtons">
-        <span class="me-3">Welcome, {{ (user$ | async)?.firstName || (user$ | async)?.email }}!</span>
-        <button mat-button (click)="logout()">
-            <mat-icon>logout</mat-icon> Logout
-        </button>
-    </div>
-    
-    <ng-template #loginButtons>
-        <a routerLink="/login" mat-button>Login</a>
-        <a routerLink="/register" mat-button>Register</a>
-    </ng-template>
+    <!-- Mobile Navigation -->
+    <ng-container *ngIf="isMobile$ | async">
+        <span class="mobile-nav-links" *ngIf="isAuthenticated$ | async; else mobileLoginButtons">
+            <a routerLink="" mat-button class="mobile-nav-button">
+                <div class="mobile-nav-content">
+                    <mat-icon>inventory</mat-icon>
+                    <span class="mobile-nav-text">Products</span>
+                </div>
+            </a>
+            <a routerLink="links" mat-button class="mobile-nav-button">
+                <div class="mobile-nav-content">
+                    <mat-icon>link</mat-icon> 
+                    <span class="mobile-nav-text">Links</span>
+                </div>
+            </a>
+            
+            <!-- Mobile User Menu -->
+            <button mat-button [matMenuTriggerFor]="mobileUserMenu" class="mobile-nav-button">
+                <div class="mobile-nav-content">
+                    <mat-icon>account_circle</mat-icon>
+                    <span class="mobile-nav-text">{{ (user$ | async)?.firstName || 'Menu' }}</span>
+                </div>
+            </button>
+            
+            <mat-menu #mobileUserMenu="matMenu">
+                <div class="user-info">
+                    <span class="user-name">{{ (user$ | async)?.firstName || 'User' }}</span>
+                    <span class="user-email">{{ (user$ | async)?.email }}</span>
+                </div>
+                <mat-divider></mat-divider>
+                <button mat-menu-item routerLink="/profile">
+                    <mat-icon>edit</mat-icon>
+                    Edit Profile
+                </button>
+                <button mat-menu-item (click)="logout()">
+                    <mat-icon>logout</mat-icon>
+                    Logout
+                </button>
+            </mat-menu>
+        </span>
+        
+        <ng-template #mobileLoginButtons>
+            <div class="mobile-auth-buttons">
+                <a routerLink="/login" mat-button class="mobile-nav-button">
+                    <div class="mobile-nav-content">
+                        <mat-icon>login</mat-icon>
+                        <span class="mobile-nav-text">Login</span>
+                    </div>
+                </a>
+                <a routerLink="/register" mat-button class="mobile-nav-button">
+                    <div class="mobile-nav-content">
+                        <mat-icon>person_add</mat-icon>
+                        <span class="mobile-nav-text">Register</span>
+                    </div>
+                </a>
+            </div>
+        </ng-template>
+    </ng-container>
 </mat-toolbar>

@@ -111,4 +111,8 @@ export class AuthService {
   private checkAuthenticationStatus(): void {
     this.getCurrentUser().subscribe();
   }
+
+  updateUserData(userData: User): void {
+    this.userSubject.next(userData);
+  }
 }

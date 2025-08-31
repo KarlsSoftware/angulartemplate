@@ -3,109 +3,239 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { capitalizeNames } from '../../utils/name-utils';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   template: `
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="text-center">Register</h3>
+    <div class="register-container">
+      <mat-card class="register-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>person_add</mat-icon>
+            Create Account
+          </mat-card-title>
+          <mat-card-subtitle>Join us today! Please fill in your information.</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+            <div class="name-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" class="name-input">
+                <mat-icon matSuffix>person</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" class="name-input">
+                <mat-icon matSuffix>person</mat-icon>
+              </mat-form-field>
             </div>
-            <div class="card-body">
-              <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-                <div class="mb-3">
-                  <label for="firstName" class="form-label">First Name</label>
-                  <input 
-                    type="text" 
-                    id="firstName"
-                    class="form-control" 
-                    formControlName="firstName"
-                    [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
-                </div>
 
-                <div class="mb-3">
-                  <label for="lastName" class="form-label">Last Name</label>
-                  <input 
-                    type="text" 
-                    id="lastName"
-                    class="form-control" 
-                    formControlName="lastName"
-                    [class.is-invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
-                </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" required>
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+                Please enter a valid email
+              </mat-error>
+            </mat-form-field>
 
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email *</label>
-                  <input 
-                    type="email" 
-                    id="email"
-                    class="form-control" 
-                    formControlName="email"
-                    [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-                  <div class="invalid-feedback" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-                    <div *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</div>
-                    <div *ngIf="registerForm.get('email')?.errors?.['email']">Invalid email format</div>
-                  </div>
-                </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" formControlName="password" required>
+              <mat-icon matSuffix>lock</mat-icon>
+              <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
+                Password is required
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">
+                Password must be at least 6 characters
+              </mat-error>
+            </mat-form-field>
 
-                <div class="mb-3">
-                  <label for="password" class="form-label">Password *</label>
-                  <input 
-                    type="password" 
-                    id="password"
-                    class="form-control" 
-                    formControlName="password"
-                    [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-                  <div class="invalid-feedback" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-                    <div *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</div>
-                    <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</div>
-                  </div>
-                </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Confirm Password</mat-label>
+              <input matInput type="password" formControlName="confirmPassword" required>
+              <mat-icon matSuffix>lock</mat-icon>
+              <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('required')">
+                Please confirm your password
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch')">
+                Passwords do not match
+              </mat-error>
+            </mat-form-field>
 
-                <div class="mb-3">
-                  <label for="confirmPassword" class="form-label">Confirm Password *</label>
-                  <input 
-                    type="password" 
-                    id="confirmPassword"
-                    class="form-control" 
-                    formControlName="confirmPassword"
-                    [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-                  <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-                    <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm password</div>
-                    <div *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords do not match</div>
-                  </div>
-                </div>
-
-                <div class="alert alert-danger" *ngIf="errorMessage">
-                  {{ errorMessage }}
-                </div>
-
-                <div class="alert alert-success" *ngIf="successMessage">
-                  {{ successMessage }}
-                </div>
-
-                <button 
-                  type="submit" 
-                  class="btn btn-primary w-100" 
-                  [disabled]="registerForm.invalid || isLoading">
-                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                  Register
-                </button>
-              </form>
-
-              <div class="text-center mt-3">
-                <p>Already have an account? <a href="javascript:void(0)" (click)="goToLogin()">Login here</a></p>
-              </div>
+            <div class="error-message" *ngIf="errorMessage">
+              <mat-icon>error</mat-icon>
+              {{ errorMessage }}
             </div>
-          </div>
-        </div>
-      </div>
+
+            <div class="success-message" *ngIf="successMessage">
+              <mat-icon>check_circle</mat-icon>
+              {{ successMessage }}
+            </div>
+
+            <button
+              type="submit"
+              mat-raised-button
+              color="primary"
+              class="register-button"
+              [disabled]="registerForm.invalid || isLoading">
+              <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+              <mat-icon *ngIf="!isLoading">person_add</mat-icon>
+              Create Account
+            </button>
+          </form>
+        </mat-card-content>
+        
+        <mat-card-actions class="card-actions-center">
+          <p>Already have an account? 
+            <button mat-button color="primary" (click)="goToLogin()">
+              Sign in here
+            </button>
+          </p>
+        </mat-card-actions>
+      </mat-card>
     </div>
-  `
+  `,
+  styles: [`
+    .register-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .register-card {
+      width: 100%;
+      max-width: 500px;
+      min-height: 600px;
+    }
+
+    .register-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .name-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .half-width {
+      flex: 1;
+    }
+
+    .register-button {
+      width: 100%;
+      height: 48px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .button-spinner {
+      margin-right: 8px;
+    }
+
+    .error-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f44336;
+      background-color: #ffebee;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .success-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #4caf50;
+      background-color: #e8f5e8;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    mat-card-header {
+      margin-bottom: 16px;
+    }
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 24px;
+    }
+
+    .card-actions-center {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .card-actions-center p {
+      margin: 16px 0;
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 600px) {
+      .register-container {
+        padding: 10px;
+        align-items: flex-start;
+        min-height: 100vh;
+      }
+
+      .register-card {
+        max-width: none;
+        margin-top: 20px;
+        min-height: auto;
+      }
+
+      .name-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .half-width {
+        width: 100%;
+      }
+
+      mat-card-title {
+        font-size: 20px;
+      }
+
+      .register-button {
+        height: 44px;
+      }
+    }
+
+    .name-input {
+      text-transform: capitalize;
+    }
+  `]
 })
 export class RegisterComponent {
   registerForm: FormGroup;
@@ -149,8 +279,8 @@ export class RegisterComponent {
       const registerData = {
         email: this.registerForm.value.email,
         password: this.registerForm.value.password,
-        firstName: this.registerForm.value.firstName,
-        lastName: this.registerForm.value.lastName
+        firstName: capitalizeNames(this.registerForm.value.firstName || ''),
+        lastName: capitalizeNames(this.registerForm.value.lastName || '')
       };
 
       this.authService.register(registerData).subscribe({
