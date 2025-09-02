@@ -117,7 +117,6 @@ import { capitalizeNames } from '../../utils/name-utils';
       align-items: center;
       min-height: 100vh;
       padding: 20px;
-      background-color: #f5f5f5;
     }
 
     .register-card {
@@ -200,21 +199,46 @@ import { capitalizeNames } from '../../utils/name-utils';
       color: rgba(0, 0, 0, 0.6);
     }
 
+    .name-input {
+      text-transform: capitalize;
+    }
+
     /* Mobile responsive */
     @media (max-width: 600px) {
       .register-container {
-        padding: 16px;
-        align-items: flex-start;
+        padding: 8px;
+        align-items: center;
         min-height: 100vh;
+        box-sizing: border-box;
       }
 
       .register-card {
         max-width: none;
-        width: 100%;
-        margin: 0;
+        width: calc(100vw - 16px);
+        margin: 0 !important;
         min-height: auto;
-        box-shadow: none;
-        background-color: transparent;
+        padding: 24px;
+        box-sizing: border-box;
+      }
+
+      mat-card-header {
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      mat-card-title {
+        font-size: 22px;
+        justify-content: center;
+      }
+
+      mat-card-subtitle {
+        text-align: center;
+        margin-top: 8px;
+      }
+
+      .register-form {
+        gap: 24px;
+        margin-top: 24px;
       }
 
       .name-row {
@@ -226,17 +250,46 @@ import { capitalizeNames } from '../../utils/name-utils';
         width: 100%;
       }
 
+      .register-button {
+        height: 48px;
+        font-size: 16px;
+        margin-top: 24px;
+      }
+
+      .error-message, .success-message {
+        padding: 16px;
+        font-size: 14px;
+      }
+
+      mat-form-field {
+        margin-bottom: 8px;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+      .register-container {
+        padding: 4px;
+      }
+
+      .register-card {
+        width: calc(100vw - 8px);
+        padding: 20px;
+        margin: 0 !important;
+      }
+
       mat-card-title {
         font-size: 20px;
       }
 
+      .register-form {
+        gap: 20px;
+      }
+
       .register-button {
         height: 44px;
+        font-size: 15px;
       }
-    }
-
-    .name-input {
-      text-transform: capitalize;
     }
   `]
 })
