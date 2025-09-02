@@ -203,15 +203,18 @@ import { capitalizeNames } from '../../utils/name-utils';
     /* Mobile responsive */
     @media (max-width: 600px) {
       .register-container {
-        padding: 10px;
+        padding: 16px;
         align-items: flex-start;
         min-height: 100vh;
       }
 
       .register-card {
         max-width: none;
-        margin-top: 20px;
+        width: 100%;
+        margin: 0;
         min-height: auto;
+        box-shadow: none;
+        background-color: transparent;
       }
 
       .name-row {

@@ -148,15 +148,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     /* Mobile responsive */
     @media (max-width: 600px) {
       .login-container {
-        padding: 10px;
+        padding: 16px;
         align-items: flex-start;
         min-height: 100vh;
       }
 
       .login-card {
         max-width: none;
-        margin-top: 20px;
+        width: 100%;
+        margin: 0;
         min-height: auto;
+        box-shadow: none;
+        background-color: transparent;
       }
 
       mat-card-title {
