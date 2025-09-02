@@ -1,3 +1,23 @@
 .container{
     margin: 0 100px;
 }
+
+/* Tablet responsive */
+@media (max-width: 768px) {
+    .container {
+        margin: 0 40px;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+    .container {
+        margin: 0 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 0 10px;
+    }
+}
