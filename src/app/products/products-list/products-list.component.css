@@ -37,7 +37,7 @@
     .mat-column-actions button {
         margin: 0 8px;
         padding: 8px 16px;
-        font-size: 14px;
+        font-size: 16px;
         min-width: 80px;
     }
     
@@ -87,7 +87,7 @@
     
     .mat-column-actions button {
         margin: 2px;
-        font-size: 12px;
+        font-size: 14px;
         padding: 4px 8px;
     }
 }
@@ -98,7 +98,7 @@
     }
     
     .mat-column-actions button {
-        font-size: 11px;
+        font-size: 12px;
         padding: 2px 6px;
     }
 }
