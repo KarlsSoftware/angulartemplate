@@ -149,7 +149,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     @media (max-width: 600px) {
       .login-container {
         padding: 16px;
-        align-items: flex-start;
+        align-items: center;
         min-height: 100vh;
       }
 
@@ -158,16 +158,66 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         width: 100%;
         margin: 0;
         min-height: auto;
-        box-shadow: none;
-        background-color: transparent;
+        padding: 24px;
+      }
+
+      mat-card-header {
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      mat-card-title {
+        font-size: 22px;
+        justify-content: center;
+      }
+
+      mat-card-subtitle {
+        text-align: center;
+        margin-top: 8px;
+      }
+
+      .login-form {
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .login-button {
+        height: 48px;
+        font-size: 16px;
+        margin-top: 24px;
+      }
+
+      .error-message {
+        padding: 16px;
+        font-size: 14px;
+      }
+
+      mat-form-field {
+        margin-bottom: 8px;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 12px;
+      }
+
+      .login-card {
+        padding: 20px;
       }
 
       mat-card-title {
         font-size: 20px;
       }
 
+      .login-form {
+        gap: 20px;
+      }
+
       .login-button {
         height: 44px;
+        font-size: 15px;
       }
     }
   `]

@@ -26,7 +26,7 @@ For a complete list of available schematics (such as `components`, `directives`,
 ng generate --help
 ```
 
-## Building
+## Building 
 
 To build the project run:
 
@@ -46,7 +46,7 @@ ng test
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
+For end-to-end(e2e) testing, run:
 
 ```bash
 ng e2e
