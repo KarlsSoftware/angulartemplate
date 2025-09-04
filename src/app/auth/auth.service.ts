@@ -21,12 +21,14 @@ export interface LoginResponse {
   email?: string;
   firstName?: string;
   lastName?: string;
+  profilePicture?: string;
 }
 
 export interface User {
   email?: string;
   firstName?: string;
   lastName?: string;
+  profilePicture?: string;
 }
 
 @Injectable({
@@ -54,11 +56,15 @@ export class AuthService {
       withCredentials: true
     }).pipe(
       tap(response => {
-        this.userSubject.next({
+        console.log('=== LOGIN RESPONSE ===', response);
+        const userData = {
           email: response.email,
           firstName: response.firstName,
-          lastName: response.lastName
-        });
+          lastName: response.lastName,
+          profilePicture: response.profilePicture
+        };
+        console.log('Setting user data:', userData);
+        this.userSubject.next(userData);
         this.isAuthenticatedSubject.next(true);
       }),
       catchError(error => {

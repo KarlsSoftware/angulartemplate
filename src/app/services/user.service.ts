@@ -16,7 +16,13 @@ export interface UpdateProfileResponse {
     email?: string;
     firstName?: string;
     lastName?: string;
+    profilePicture?: string;
   };
+}
+
+export interface UploadProfilePictureResponse {
+  message: string;
+  profilePicture: string;
 }
 
 @Injectable({
@@ -29,6 +35,21 @@ export class UserService {
 
   updateProfile(profileData: UpdateProfileRequest): Observable<UpdateProfileResponse> {
     return this.http.put<UpdateProfileResponse>(`${this.apiUrl}/api/auth/profile`, profileData, {
+      withCredentials: true
+    });
+  }
+
+  uploadProfilePicture(file: File): Observable<UploadProfilePictureResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const uploadUrl = `${this.apiUrl}/api/auth/upload-profile-picture`;
+    console.log('=== FRONTEND SERVICE: Making HTTP request ===');
+    console.log('Upload URL:', uploadUrl);
+    console.log('File details:', { name: file.name, size: file.size, type: file.type });
+    console.log('API URL from environment:', this.apiUrl);
+    
+    return this.http.post<UploadProfilePictureResponse>(uploadUrl, formData, {
       withCredentials: true
     });
   }

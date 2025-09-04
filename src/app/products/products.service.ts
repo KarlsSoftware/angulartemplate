@@ -18,7 +18,8 @@ export class ProductsService {
   }
 
   public getById(id: number): Observable<Laptop>{
-    return this.http.get<Laptop>(`${this.apiUrl}/${id}`);
+    return this.http.get<Lap
+    top>(`${this.apiUrl}/${id}`);
   }
 
   public create(laptop: LaptopCreation){

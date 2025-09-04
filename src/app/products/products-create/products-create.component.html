@@ -1,1 +1,12 @@
-<app-products-form title="Create Laptop" (formPosted)="saveChanges($event)"></app-products-form>
+<h2>Create Laptop</h2>
+
+<form (submit)="saveChanges()" [formGroup]="form">
+    <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput [formControl]="form.controls.name" />
+    </mat-form-field>
+    <div>
+        <button type="submit" mat-flat-button>Save Changes</button>
+        <a mat-stroked-button routerLink="/products">Cancel</a>
+    </div>
+</form>

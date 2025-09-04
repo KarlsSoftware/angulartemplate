@@ -8,9 +8,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../auth/auth.service';
 import { capitalizeNames } from '../utils/name-utils';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -23,7 +25,8 @@ import { capitalizeNames } from '../utils/name-utils';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDividerModule
   ],
   template: `
     <div class="profile-container">
@@ -36,6 +39,57 @@ import { capitalizeNames } from '../utils/name-utils';
         </mat-card-header>
         
         <mat-card-content>
+          <!-- Profile Picture Section -->
+          <div class="profile-picture-section">
+            <div class="current-picture">
+              @if (getProfilePictureUrl()) {
+                <img [src]="getProfilePictureUrl()" alt="Profile Picture" class="profile-picture">
+              } @else {
+                <mat-icon class="default-avatar">account_circle</mat-icon>
+              }
+            </div>
+            
+            <div class="picture-upload">
+              <input type="file" 
+                     #fileInput 
+                     (change)="onFileSelected($event)" 
+                     accept=".jpg,.jpeg,.png"
+                     style="display: none;">
+              
+              <button type="button" 
+                      mat-stroked-button 
+                      (click)="fileInput.click()"
+                      [disabled]="isLoading">
+                <mat-icon>photo_camera</mat-icon>
+                Choose File
+              </button>
+              
+              @if (selectedFile) {
+                <button type="button" 
+                        mat-raised-button 
+                        color="primary"
+                        (click)="uploadProfilePicture()"
+                        [disabled]="isLoading">
+                  <mat-spinner *ngIf="isLoading" diameter="16" class="upload-spinner"></mat-spinner>
+                  <mat-icon *ngIf="!isLoading">upload</mat-icon>
+                  Upload Picture
+                </button>
+                
+                <button type="button" 
+                        mat-stroked-button 
+                        (click)="removePreview()"
+                        [disabled]="isLoading">
+                  <mat-icon>close</mat-icon>
+                  Cancel
+                </button>
+              }
+              
+              <p class="upload-hint">Supports JPG and PNG (max 5MB)</p>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
           <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email</mat-label>
@@ -190,11 +244,83 @@ import { capitalizeNames } from '../utils/name-utils';
     .name-input {
       text-transform: capitalize;
     }
+
+    .profile-picture-section {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      padding: 1rem 0;
+    }
+
+    .current-picture {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e0e0e0;
+    }
+
+    .default-avatar {
+      font-size: 120px;
+      width: 120px;
+      height: 120px;
+      color: #9e9e9e;
+    }
+
+    .picture-upload {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: #666;
+      margin: 0;
+    }
+
+    .upload-spinner {
+      margin-right: 8px;
+    }
+
+    mat-divider {
+      margin: 1rem 0;
+    }
+
+    /* Mobile responsive for profile picture */
+    @media (max-width: 600px) {
+      .profile-picture-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .picture-upload {
+        align-items: center;
+      }
+
+      .profile-picture, .default-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 100px;
+      }
+    }
   `]
 })
 export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   isLoading = false;
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
+  currentProfilePicture: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -211,6 +337,10 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Debug authentication status
+    console.log('Is authenticated:', this.authService.isAuthenticated());
+    console.log('Current user:', this.authService.getUser());
+    
     // Load current user data from auth service (already cached)
     const currentUser = this.authService.getUser();
     if (currentUser) {
@@ -219,6 +349,7 @@ export class ProfileComponent implements OnInit {
         firstName: currentUser.firstName || '',
         lastName: currentUser.lastName || ''
       });
+      this.currentProfilePicture = currentUser.profilePicture || null;
     } else {
       // Fallback: fetch from API if not in cache
       this.authService.getCurrentUser().subscribe({
@@ -228,6 +359,7 @@ export class ProfileComponent implements OnInit {
             firstName: user.firstName || '',
             lastName: user.lastName || ''
           });
+          this.currentProfilePicture = user.profilePicture || null;
         },
         error: (error) => {
           this.snackBar.open('Failed to load user data', 'Close', {
@@ -280,6 +412,103 @@ export class ProfileComponent implements OnInit {
         }
       });
     }
+  }
+
+  onFileSelected(event: any) {
+    console.log('File selection event triggered', event);
+    const file = event.target.files[0];
+    console.log('Selected file:', file);
+    
+    if (file) {
+      // Validate file type
+      if (!file.type.match('image/(jpeg|jpg|png)')) {
+        console.log('Invalid file type:', file.type);
+        this.snackBar.open('Only JPG and PNG files are allowed', 'Close', {
+          duration: 3000
+        });
+        return;
+      }
+
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        console.log('File too large:', file.size);
+        this.snackBar.open('File size cannot exceed 5MB', 'Close', {
+          duration: 3000
+        });
+        return;
+      }
+
+      console.log('File is valid, creating preview');
+      this.selectedFile = file;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+        console.log('Preview created');
+      };
+      reader.readAsDataURL(file);
+    } else {
+      console.log('No file selected');
+    }
+  }
+
+  uploadProfilePicture() {
+    if (!this.selectedFile) {
+      console.log('ERROR: No file selected for upload');
+      return;
+    }
+
+    console.log('=== FRONTEND: Starting upload process ===');
+    console.log('Uploading file:', this.selectedFile.name, this.selectedFile.size, this.selectedFile.type);
+    
+    this.isLoading = true;
+    this.userService.uploadProfilePicture(this.selectedFile).subscribe({
+      next: (response) => {
+        console.log('Upload successful:', response);
+        this.isLoading = false;
+        this.currentProfilePicture = response.profilePicture;
+        this.imagePreview = null;
+        this.selectedFile = null;
+        
+        // Update auth service with new profile picture
+        const currentUser = this.authService.getUser();
+        if (currentUser) {
+          this.authService.updateUserData({
+            ...currentUser,
+            profilePicture: response.profilePicture
+          });
+        }
+
+        this.snackBar.open(response.message, 'Close', {
+          duration: 3000
+        });
+      },
+      error: (error) => {
+        console.error('Upload failed:', error);
+        this.isLoading = false;
+        const message = error.error?.message || 'Failed to upload profile picture';
+        this.snackBar.open(message, 'Close', {
+          duration: 3000
+        });
+      }
+    });
+  }
+
+  removePreview() {
+    this.selectedFile = null;
+    this.imagePreview = null;
+  }
+
+  getProfilePictureUrl() {
+    if (this.imagePreview) return this.imagePreview;
+    if (this.currentProfilePicture) {
+      const url = `${environment.apiURL}${this.currentProfilePicture}`;
+      console.log('Profile picture URL:', url);
+      return url;
+    }
+    console.log('No profile picture available');
+    return null;
   }
 
   goBack() {

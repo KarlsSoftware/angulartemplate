@@ -6,13 +6,12 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductsService } from '../products.service';
 import { LaptopCreation } from '../products.models';
 import { MatInputModule } from '@angular/material/input';
-import { ProductsFormComponent } from '../products-form/products-form.component';
 
 
 @Component({
   selector: 'app-products-create',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, RouterLink, MatInputModule, ProductsFormComponent],  
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, RouterLink, MatInputModule],  
   templateUrl: './products-create.component.html',
   styleUrl: './products-create.component.css',
 })
@@ -21,9 +20,14 @@ export class ProductsCreateComponent {
   productService = inject(ProductsService);
   router = inject(Router);
 
-  saveChanges(laptop: LaptopCreation) {
+  form = this.formBuilder.group({
+    name: [''],
+  });
+
+  saveChanges() {
+    const laptop = this.form.value as LaptopCreation;
     this.productService.create(laptop).subscribe(() => {
-    this.router.navigate(['/products']);
+      this.router.navigate(['/products']);
     });
   }
 }

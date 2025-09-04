@@ -4,22 +4,16 @@
     Create a new Laptop
 </a>
 
-@if (laptops){
-    <table mat-table [dataSource]="laptops" class="mat-elevation-z8 index-elements">
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let laptop">{{laptop.name}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let laptop">
-                <a mat-flat-button routerLink="/products/edit/{{laptop.id}}">Edit</a>
-                <button mat-flat-button color="warn" (click)="delete(laptop.id)">Delete</button>
-            </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
-    </table>
+@if (laptops) {
+    <div class="laptop-list">
+        @for (laptop of laptops; track laptop.id) {
+            <div class="laptop-card">
+                <div class="laptop-name">{{laptop.name}}</div>
+                <div class="laptop-actions">
+                    <a mat-flat-button routerLink="/products/edit/{{laptop.id}}">Edit</a>
+                    <button mat-flat-button color="warn" (click)="delete(laptop.id)">Delete</button>
+                </div>
+            </div>
+        }
+    </div>
 }

@@ -15,10 +15,34 @@
 
 .user-button {
   color: rgba(0, 0, 0, 0.87); /* Dark color for visibility */
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .user-button:hover {
   background-color: rgba(0, 0, 0, 0.04);
+}
+
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.user-name-display {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mobile-profile-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
 }
 
 .user-section {

@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-menu',
@@ -31,6 +32,20 @@ export class MenuComponent {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
     this.isMobile$ = this.breakpointObserver.observe([Breakpoints.Handset])
       .pipe(map((result: any) => result.matches));
+  }
+
+  getProfilePictureUrl(user: User | null): string | null {
+    if (user?.profilePicture) {
+      return `${environment.apiURL}${user.profilePicture}`;
+    }
+    return null;
+  }
+
+  getDisplayName(user: User | null): string {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+    return user?.firstName || user?.email || 'User';
   }
 
   logout() {
