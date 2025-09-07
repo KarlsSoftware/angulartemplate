@@ -337,10 +337,6 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Debug authentication status
-    console.log('Is authenticated:', this.authService.isAuthenticated());
-    console.log('Current user:', this.authService.getUser());
-    
     // Load current user data from auth service (already cached)
     const currentUser = this.authService.getUser();
     if (currentUser) {
@@ -415,14 +411,11 @@ export class ProfileComponent implements OnInit {
   }
 
   onFileSelected(event: any) {
-    console.log('File selection event triggered', event);
     const file = event.target.files[0];
-    console.log('Selected file:', file);
     
     if (file) {
       // Validate file type
       if (!file.type.match('image/(jpeg|jpg|png)')) {
-        console.log('Invalid file type:', file.type);
         this.snackBar.open('Only JPG and PNG files are allowed', 'Close', {
           duration: 3000
         });
@@ -431,41 +424,31 @@ export class ProfileComponent implements OnInit {
 
       // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        console.log('File too large:', file.size);
         this.snackBar.open('File size cannot exceed 5MB', 'Close', {
           duration: 3000
         });
         return;
       }
 
-      console.log('File is valid, creating preview');
       this.selectedFile = file;
 
       // Create preview
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
-        console.log('Preview created');
       };
       reader.readAsDataURL(file);
-    } else {
-      console.log('No file selected');
     }
   }
 
   uploadProfilePicture() {
     if (!this.selectedFile) {
-      console.log('ERROR: No file selected for upload');
       return;
     }
-
-    console.log('=== FRONTEND: Starting upload process ===');
-    console.log('Uploading file:', this.selectedFile.name, this.selectedFile.size, this.selectedFile.type);
     
     this.isLoading = true;
     this.userService.uploadProfilePicture(this.selectedFile).subscribe({
       next: (response) => {
-        console.log('Upload successful:', response);
         this.isLoading = false;
         this.currentProfilePicture = response.profilePicture;
         this.imagePreview = null;
@@ -485,7 +468,6 @@ export class ProfileComponent implements OnInit {
         });
       },
       error: (error) => {
-        console.error('Upload failed:', error);
         this.isLoading = false;
         const message = error.error?.message || 'Failed to upload profile picture';
         this.snackBar.open(message, 'Close', {
@@ -504,10 +486,8 @@ export class ProfileComponent implements OnInit {
     if (this.imagePreview) return this.imagePreview;
     if (this.currentProfilePicture) {
       const url = `${environment.apiURL}${this.currentProfilePicture}`;
-      console.log('Profile picture URL:', url);
       return url;
     }
-    console.log('No profile picture available');
     return null;
   }
 

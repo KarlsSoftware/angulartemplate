@@ -44,10 +44,6 @@ export class UserService {
     formData.append('file', file);
     
     const uploadUrl = `${this.apiUrl}/api/auth/upload-profile-picture`;
-    console.log('=== FRONTEND SERVICE: Making HTTP request ===');
-    console.log('Upload URL:', uploadUrl);
-    console.log('File details:', { name: file.name, size: file.size, type: file.type });
-    console.log('API URL from environment:', this.apiUrl);
     
     return this.http.post<UploadProfilePictureResponse>(uploadUrl, formData, {
       withCredentials: true
